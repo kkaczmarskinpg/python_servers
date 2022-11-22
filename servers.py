@@ -2,13 +2,13 @@
 # -*- coding: utf-8 -*-
 """Kacper Kaczmarski, 411814"""
 """Kacper Iwicki, 412027"""
-"""Marceli Jach, nr albumu 409669"""
-"""Marek Janaszkiewicz, nr albumu"""
+"""Marceli Jach, 409669"""
+"""Marek Janaszkiewicz, 411925"""
 
 
 
 
-from typing import Optional, List
+from typing import Optional, List, Dict
 from abc import ABC, abstractmethod
 import re
 class Product:
@@ -64,8 +64,20 @@ class ListServer (Server):
         return good_prods
 
 
-class MapServer:
-    pass
+class MapServer (Server):
+    def __init__(self, products: Dict[str:int]):
+        self.products = [Product(p, products[p]) for p in products]
+
+    def get_entries(self, n_letters):
+        expression = '^[a-zA-Z]{1,n_letters}[0-9]{2,3}$'.replace(
+            'n_letters', str(n_letters))
+        for product in self.products:
+            list_of_products = []
+            if re.fullmatch(expression, product.name):
+                list_of_products.append(product)
+                if len(list_of_products) > Server.n_max_returned_entries:
+                    return TooManyProductsFoundError('Za dużo produktów kolego', len(list_of_products))
+        return list_of_products
 
 
 class Client:
