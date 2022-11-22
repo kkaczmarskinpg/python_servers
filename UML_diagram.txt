@@ -1,0 +1,53 @@
+@startuml
+class Product{
++ str: name
++ float: price
+__
++ __init__(str name, float price)
+}
+
+abstract class Server{
++ {static} int: n_max_returned_entries
++ {abstract} Union[list[Product}, dict[str, float]]: products
+__
++ {abstract} list get_entries(int n_letters)
++ {abstract} __init__(list[Product] products)
+}
+
+class MapServer{
++ dict[str, Product]: products
+__
++ list get_entries(int n_letters)
++ __init__(list[Product] products)
+}
+
+class ListServer{
++ list[Product]: products
+__
++ list get_entries(int n_letters)
++ __init__(list[Product] products)
+}
+
+class TooManyProductsFoundError{
+}
+
+class Client{
++ Server: server
+__
++ __init__(Server Server)
++ Optional[Float] get_total_price(Optional[int] n_letters)
+}
+
+class ValueError{
+}
+
+Server <|-- MapServer
+Server <|-- ListServer
+MapServer "1" *-- "*" Product
+ListServer "1" *-- "*" Product
+Server ..> TooManyProductsFoundError: <<throws>>
+Client "*" o-- "1" Server
+Product ..> ValueError: <<throws>>
+
+hide empty members
+@enduml
