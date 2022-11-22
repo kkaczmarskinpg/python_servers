@@ -6,17 +6,25 @@
 """Marek Janaszkiewicz, nr albumu"""
 
 
-
-
 from typing import Optional, List
 from abc import ABC, abstractmethod
+import re
 
 
 class Product:
     # FIXME: klasa powinna posiadać metodę inicjalizacyjną przyjmującą argumenty wyrażające nazwę produktu (typu str) i jego cenę (typu float) -- w takiej kolejności -- i ustawiającą atrybuty `name` (typu str) oraz `price` (typu float)
+    def __init__(self, name: str, price: float):
+        if re.match(r"^[a-zA-Z]{1,}\d{1,}$", name) is not None:
+            self.name: str = name
+            self.price: float = price
+        else:
+            raise ValueError
 
-    def __eq__(self, other):
-        return None  # FIXME: zwróć odpowiednią wartość
+    def __eq__(self, other) -> bool:
+        if self.name == other.name and self.price == other.price:
+            return True
+        else:
+            return False
 
     def __hash__(self):
         return hash((self.name, self.price))
