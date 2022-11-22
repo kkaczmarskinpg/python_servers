@@ -8,7 +8,8 @@
 
 
 
-from typing import Optional
+from typing import Optional, List
+from abc import ABC, abstractmethod
 class Product:
     # FIXME: klasa powinna posiadać metodę inicjalizacyjną przyjmującą argumenty wyrażające nazwę produktu (typu str) i jego cenę (typu float) -- w takiej kolejności -- i ustawiającą atrybuty `name` (typu str) oraz `price` (typu float)
 
@@ -28,6 +29,13 @@ class TooManyProductsFoundError:
 #   (1) metodę inicjalizacyjną przyjmującą listę obiektów typu `Product` i ustawiającą atrybut `products` zgodnie z typem reprezentacji produktów na danym serwerze,
 #   (2) możliwość odwołania się do atrybutu klasowego `n_max_returned_entries` (typu int) wyrażający maksymalną dopuszczalną liczbę wyników wyszukiwania,
 #   (3) możliwość odwołania się do metody `get_entries(self, n_letters)` zwracającą listę produktów spełniających kryterium wyszukiwania
+class Server:
+    n_max_returned_entries = 5
+
+    @abstractmethod
+    def get_entries(n_letters: int) -> List[Product]:
+        pass
+
 
 class ListServer:
     pass
