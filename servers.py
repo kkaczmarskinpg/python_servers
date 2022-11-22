@@ -2,15 +2,15 @@
 # -*- coding: utf-8 -*-
 """Kacper Kaczmarski, 411814"""
 """Kacper Iwicki, 412027"""
-"""Marceli Jach, nr albumu"""
+"""Marceli Jach, nr albumu 409669"""
 """Marek Janaszkiewicz, nr albumu"""
+
+
 
 
 from typing import Optional, List
 from abc import ABC, abstractmethod
 import re
-
-
 class Product:
     # FIXME: klasa powinna posiadać metodę inicjalizacyjną przyjmującą argumenty wyrażające nazwę produktu (typu str) i jego cenę (typu float) -- w takiej kolejności -- i ustawiającą atrybuty `name` (typu str) oraz `price` (typu float)
     def __init__(self, name: str, price: float):
@@ -50,8 +50,18 @@ class Server(ABC):
         raise NotImplementedError()
 
 
-class ListServer:
-    pass
+class ListServer (Server):
+    def __init__(self, products: List[Product]):
+        self.products = [Product(p.name, p.price) for p in products]
+
+    def get_entries(self, n_letters) -> List[Product]:
+        pattern = '^[a-zA-Z]{n}[0-9]{2,3}'.replace('n', str(n_letters))
+        good_prods = [
+            p for p in self.products if re.fullmatch(pattern, p.name)]
+        if len(good_prods) > Server.n_max_returned_entries:
+            raise TooManyProductsFoundError(
+                "Za dużo produktów kolego!", len(good_prods))
+        return good_prods
 
 
 class MapServer:
