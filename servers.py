@@ -20,9 +20,12 @@ class Product:
         return hash((self.name, self.price))
 
 
-class TooManyProductsFoundError:
+class TooManyProductsFoundError(Exception):
     # Reprezentuje wyjątek związany ze znalezieniem zbyt dużej liczby produktów.
-    pass
+    def __init__(self, message: str, number_of_products: int):
+        super().__init__(message)
+        self.message = message
+        self.number_of_products = number_of_products
 
 
 # FIXME: Każada z poniższych klas serwerów powinna posiadać:
@@ -53,8 +56,8 @@ class Client:
     def get_total_price(self, n_letters: Optional[int]) -> Optional[float]:
         try:
             products = self.server.get_entries(n_letters)
-        except TooManyProductsFoundError:
-            print("Znaleziono za dużo produktów")
+        except TooManyProductsFoundError as e:
+            print(e.message)
             return None
         if not products:
             return None
