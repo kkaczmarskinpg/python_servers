@@ -6,13 +6,13 @@
 """Marek Janaszkiewicz, 411925"""
 
 
-
-
 from typing import Optional, List, Dict
 from abc import ABC, abstractmethod
 import re
+
+
 class Product:
-    # FIXME: klasa powinna posiadać metodę inicjalizacyjną przyjmującą argumenty wyrażające nazwę produktu (typu str) i jego cenę (typu float) -- w takiej kolejności -- i ustawiającą atrybuty `name` (typu str) oraz `price` (typu float)
+    # Done: klasa powinna posiadać metodę inicjalizacyjną przyjmującą argumenty wyrażające nazwę produktu (typu str) i jego cenę (typu float) -- w takiej kolejności -- i ustawiającą atrybuty `name` (typu str) oraz `price` (typu float)
     def __init__(self, name: str, price: float):
         if re.match(r"^[a-zA-Z]{1,}\d{1,}$", name) is not None:
             self.name: str = name
@@ -38,7 +38,7 @@ class TooManyProductsFoundError(Exception):
         self.number_of_products = number_of_products
 
 
-# FIXME: Każada z poniższych klas serwerów powinna posiadać:
+# Done: Każada z poniższych klas serwerów powinna posiadać:
 #   (1) metodę inicjalizacyjną przyjmującą listę obiektów typu `Product` i ustawiającą atrybut `products` zgodnie z typem reprezentacji produktów na danym serwerze,
 #   (2) możliwość odwołania się do atrybutu klasowego `n_max_returned_entries` (typu int) wyrażający maksymalną dopuszczalną liczbę wyników wyszukiwania,
 #   (3) możliwość odwołania się do metody `get_entries(self, n_letters)` zwracającą listę produktów spełniających kryterium wyszukiwania
@@ -50,7 +50,7 @@ class Server(ABC):
         raise NotImplementedError()
 
 
-class ListServer (Server):
+class ListServer(Server):
     def __init__(self, products: List[Product]):
         self.products = [Product(p.name, p.price) for p in products]
 
@@ -64,7 +64,7 @@ class ListServer (Server):
         return good_prods
 
 
-class MapServer (Server):
+class MapServer(Server):
     def __init__(self, products: Dict[str:int]):
         self.products = [Product(p, products[p]) for p in products]
 
@@ -76,7 +76,7 @@ class MapServer (Server):
             if re.fullmatch(expression, product.name):
                 list_of_products.append(product)
                 if len(list_of_products) > Server.n_max_returned_entries:
-                    return TooManyProductsFoundError('Za dużo produktów kolego', len(list_of_products))
+                    return TooManyProductsFoundError('Za dużo produktów kolego!', len(list_of_products))
         return list_of_products
 
 
