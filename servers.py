@@ -1,7 +1,11 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 """Kacper Kaczmarski, 411814"""
+"""Kacper Iwicki, nr albumu"""
+"""Marceli Jach, nr albumu"""
+"""Marek Janaszkiewicz, nr albumu"""
  
+
 from typing import Optional
  
  
