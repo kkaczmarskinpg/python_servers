@@ -64,3 +64,4 @@ class Client:
         sum = 0
         for p in products:
             sum += p.price
+        return sum
