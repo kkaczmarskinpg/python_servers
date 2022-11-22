@@ -8,7 +8,7 @@
 
 from typing import Optional, Dict, List
 import re
- 
+from abc import abstractmethod
  
 class Product:
     # FIXME: klasa powinna posiadać metodę inicjalizacyjną przyjmującą argumenty wyrażające nazwę produktu (typu str) i jego cenę (typu float) -- w takiej kolejności -- i ustawiającą atrybuty `name` (typu str) oraz `price` (typu float)
@@ -24,23 +24,28 @@ class TooManyProductsFoundError:
 #   (2) możliwość odwołania się do atrybutu klasowego `n_max_returned_entries` (typu int) wyrażający maksymalną dopuszczalną liczbę wyników wyszukiwania,
 #   (3) możliwość odwołania się do metody `get_entries(self, n_letters)` zwracającą listę produktów spełniających kryterium wyszukiwania
 class Server:
-    pass
+    n_max_returned_entries = 5
+
+    @abstractmethod
+    def get_entries(self,n_letters):
+        return NotImplementedError()
 class ListServer:
     pass
  
-class MapServer:
+class MapServer (Server):
     def __init__(self,dict:Dict[str:int]):
-        self.products = []
+        self.products = {}
         for key in dict:
-            self.products.append((key,dict[key]))
+            self.products[key] = dict[key]
 
-    def get_entries(self, n_letters):
+    def get_entries(self,n_letters):
+        expression = '^[a-zA-Z]{1,n_letters}[0-9]{2,3}$'.replace('n_letters', str(n_letters))
         for product in self.products:
             list_of_products = []
-            expression = f'^[a-zA-Z]{1,n_letters}'
-            expression += '[0-9]{2,3}$'
             if re.fullmatch(expression,product.name):
-                list_of_products.append((product.name,product.price))
+                list_of_products.append(product)
+                if len(list_of_products) > Server.n_max_returned_entries:
+                    return TooManyProductsFoundError('Za dużo produktów kolego',len(list_of_products))
         return list_of_products
  
  
