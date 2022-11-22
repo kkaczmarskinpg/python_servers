@@ -33,10 +33,9 @@ class ListServer:
     pass
  
 class MapServer (Server):
-    def __init__(self,dict:Dict[str:int]):
-        self.products = {}
-        for key in dict:
-            self.products[key] = dict[key]
+    def __init__(self,products:Dict[str:int]):
+        self.products = [Product(p,products[p]) for p in products]
+
 
     def get_entries(self,n_letters):
         expression = '^[a-zA-Z]{1,n_letters}[0-9]{2,3}$'.replace('n_letters', str(n_letters))
