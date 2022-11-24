@@ -73,12 +73,9 @@ class MapServer(Server):
     def get_entries(self, n_letters):
         expression = '^[a-zA-Z]{1,n_letters}[0-9]{2,3}$'.replace(
             'n_letters', str(n_letters))
-        list_of_products = []
-        for key in self.products_dict.keys():
-            if re.fullmatch(expression, key):
-                list_of_products.append(Product(key,self.products_dict[key]))
-                if len(list_of_products) > Server.n_max_returned_entries:
-                    return TooManyProductsFoundError('Za dużo produktów kolego!', len(list_of_products))
+        list_of_products = [Product(p,self.products_dict[p]) for p in self.products_dict.keys() if re.fullmatch(expression,p)]
+        if len(list_of_products) > Server.n_max_returned_entries:
+            return TooManyProductsFoundError('Za dużo produktów kolego!', len(list_of_products))
         return list_of_products
 
 
