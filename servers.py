@@ -2,59 +2,98 @@
 # -*- coding: utf-8 -*-
 """Kacper Kaczmarski, 411814"""
 """Kacper Iwicki, 412027"""
-"""Marceli Jach, nr albumu 409669"""
-"""Marek Janaszkiewicz, nr albumu"""
+"""Marceli Jach, 409669"""
+"""Marek Janaszkiewicz, 411925"""
 
 
-
-
-from typing import Optional, List
+from typing import Optional, List, Dict
 from abc import ABC, abstractmethod
 import re
 
-class Product:
-    # FIXME: klasa powinna posiadać metodę inicjalizacyjną przyjmującą argumenty wyrażające nazwę produktu (typu str) i jego cenę (typu float) -- w takiej kolejności -- i ustawiającą atrybuty `name` (typu str) oraz `price` (typu float)
 
-    def __eq__(self, other):
-        return None  # FIXME: zwróć odpowiednią wartość
+class Product:
+    # Done: klasa powinna posiadać metodę inicjalizacyjną przyjmującą argumenty wyrażające nazwę produktu (typu str) i jego cenę (typu float) -- w takiej kolejności -- i ustawiającą atrybuty `name` (typu str) oraz `price` (typu float)
+    def __init__(self, name: str, price: float):
+        if re.match(r"^[a-zA-Z]{1,}\d{1,}$", name) is not None:
+            self.name: str = name
+            self.price: float = price
+        else:
+            raise ValueError
+
+    def __eq__(self, other) -> bool:
+        if self.name == other.name and self.price == other.price:
+            return True
+        else:
+            return False
 
     def __hash__(self):
         return hash((self.name, self.price))
 
 
-class TooManyProductsFoundError:
+class TooManyProductsFoundError(Exception):
     # Reprezentuje wyjątek związany ze znalezieniem zbyt dużej liczby produktów.
-    pass
+    def __init__(self, message: str, number_of_products: int):
+        super().__init__(message)
+        self.message = message
+        self.number_of_products = number_of_products
 
 
-# FIXME: Każada z poniższych klas serwerów powinna posiadać:
+# Done: Każada z poniższych klas serwerów powinna posiadać:
 #   (1) metodę inicjalizacyjną przyjmującą listę obiektów typu `Product` i ustawiającą atrybut `products` zgodnie z typem reprezentacji produktów na danym serwerze,
 #   (2) możliwość odwołania się do atrybutu klasowego `n_max_returned_entries` (typu int) wyrażający maksymalną dopuszczalną liczbę wyników wyszukiwania,
 #   (3) możliwość odwołania się do metody `get_entries(self, n_letters)` zwracającą listę produktów spełniających kryterium wyszukiwania
-class Server:
-    n_max_returned_entries = 5
+class Server(ABC):
+    n_max_returned_entries: int = 5
 
     @abstractmethod
     def get_entries(n_letters: int) -> List[Product]:
         raise NotImplementedError()
 
-class ListServer (Server):
-    def __init__(self,products: List[Product]):
-        self.products = [Product(p.name,p.price) for p in products]
-    def get_entries(self,n_letters) -> List[Product]:
+
+class ListServer(Server):
+    def __init__(self, products: List[Product]):
+        self.products = [Product(p.name, p.price) for p in products]
+
+    def get_entries(self, n_letters) -> List[Product]:
         pattern = '^[a-zA-Z]{n}[0-9]{2,3}'.replace('n', str(n_letters))
-        good_prods = [p for p in self.products if re.fullmatch(pattern, p.name)]
+        good_prods = [
+            p for p in self.products if re.fullmatch(pattern, p.name)]
         if len(good_prods) > Server.n_max_returned_entries:
-            raise TooManyProductsFoundError("Za dużo produktów kolego!", len(good_prods))
+            raise TooManyProductsFoundError(
+                "Za dużo produktów kolego!", len(good_prods))
         return good_prods
 
 
-class MapServer:
-    pass
+class MapServer(Server):
+    def __init__(self, products: Dict[str:int]):
+        self.products = [Product(p, products[p]) for p in products]
+
+    def get_entries(self, n_letters):
+        expression = '^[a-zA-Z]{1,n_letters}[0-9]{2,3}$'.replace(
+            'n_letters', str(n_letters))
+        for product in self.products:
+            list_of_products = []
+            if re.fullmatch(expression, product.name):
+                list_of_products.append(product)
+                if len(list_of_products) > Server.n_max_returned_entries:
+                    return TooManyProductsFoundError('Za dużo produktów kolego!', len(list_of_products))
+        return list_of_products
 
 
 class Client:
-    # FIXME: klasa powinna posiadać metodę inicjalizacyjną przyjmującą obiekt reprezentujący serwer
+    # DONE: klasa powinna posiadać metodę inicjalizacyjną przyjmującą obiekt reprezentujący serwer
+    def __init__(self, server: Server):
+        self.server = server
 
     def get_total_price(self, n_letters: Optional[int]) -> Optional[float]:
-        raise NotImplementedError()
+        try:
+            products = self.server.get_entries(n_letters)
+        except TooManyProductsFoundError as e:
+            print(e.message)
+            return None
+        if not products:
+            return None
+        sum = 0
+        for p in products:
+            sum += p.price
+        return sum

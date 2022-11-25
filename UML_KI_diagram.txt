@@ -1,0 +1,42 @@
+@startuml
+class Product {
+  + name: str
+  + cost: float
+
+  + __init__(name: str, cost: float)
+  + __eq__(other: Product): bool
+  + __hash__(): hash
+}
+
+abstract class Server{
+  + {static} n_max_returned_entries: int
+  + {abstract} products: Union[List[Product], Dict[str, Product]]
+  + {abstract} __init__(products: List[Product]) 
+  + {abstract} get_entries(n_letters: int): List[Product]
+}
+
+class ListServer{
+  + products: List[Product]
+  + __init__(products: List[Product])
+  + get_entries(n_letters: int): List[Product]
+}
+
+class MapServer{
+  + products: Dict[str, Product]
+  + __init__(products: List[Product])
+  + get_entries(n_letters: int): List[Product]
+}
+
+class Client{
+  + server: Server
+  + __init__(server: Server)
+  + get_total_price(n_letters: Optional[int]): Optional[float]
+}
+Server "1" *-- "*" Product
+Server <|-- ListServer
+Server <|-- MapServer
+TooManyProductsFoundError <.. Server : <<throws>>
+ValueError <.. Product : <<throws>> 
+Client "*" o-- "1" Server
+hide empty members
+@enduml
