@@ -1,5 +1,5 @@
 import unittest
-import operator
+from operator import attrgetter
  
 from servers import ListServer, Product, Client, MapServer
  
@@ -13,7 +13,7 @@ class ServerTest(unittest.TestCase):
         for server_type in server_types:
             server = server_type(products)
             entries = server.get_entries(2)
-            self.assertEqual(products.sort(key=operator.attrgetter('price')), entries)
- 
+            self.assertEqual(products.sort(key=attrgetter('price')), entries)
+
 if __name__ == '__main__':
     unittest.main()
