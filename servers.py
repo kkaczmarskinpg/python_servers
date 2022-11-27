@@ -65,16 +65,16 @@ class ListServer(Server):
 
 
 class MapServer(Server):
-    def __init__(self, products: Dict[str, int]):
-        self.products = [Product(p, products[p]) for p in products]
+    def __init__(self, products: List[Product]):
+        self.products = {p.name: p for p in products}
 
     def get_entries(self, n_letters):
         expression = '^[a-zA-Z]{1,n_letters}[0-9]{2,3}$'.replace(
             'n_letters', str(n_letters))
         for product in self.products:
             list_of_products = []
-            if re.fullmatch(expression, product.name):
-                list_of_products.append(product)
+            if re.fullmatch(expression, product):
+                list_of_products.append(self.products[product])
                 if len(list_of_products) > Server.n_max_returned_entries:
                     return TooManyProductsFoundError('Za dużo produktów kolego!', len(list_of_products))
         return list_of_products
