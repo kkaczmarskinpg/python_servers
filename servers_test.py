@@ -44,9 +44,25 @@ class ProductTest(unittest.TestCase):
         p2 = Product("JP2", 21.37)
         p3 = Product("J2", 21.37)
         p4 = Product("JP2", 21.47)
+        p5 = Product("Jp200000000000000000000", 21.47)
         self.assertEqual(p1, p2)
         self.assertNotEqual(p2, p3)
         self.assertNotEqual(p1, p4)
+        self.assertNotEqual(p5, p4)
+
+    def test_ValueError_throw(self):
+        with self.assertRaises(ValueError):
+            p = Product("L0L", 11)
+        with self.assertRaises(ValueError):
+            p = Product("LL", 11)
+        with self.assertRaises(ValueError):
+            p = Product("_LL01", 11)
+        with self.assertRaises(ValueError):
+            p = Product("0LL0", 11)
+        with self.assertRaises(ValueError):
+            p = Product("AB202022_", 11)
+        with self.assertRaises(ValueError):
+            p = Product("AB.202", 11)
 
 
 if __name__ == '__main__':
