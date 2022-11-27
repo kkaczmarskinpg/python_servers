@@ -6,11 +6,11 @@
 """Marek Janaszkiewicz, 411925"""
 
 
+
+
 from typing import Optional, List, Dict
 from abc import ABC, abstractmethod
 import re
-
-
 class Product:
     # Done: klasa powinna posiadać metodę inicjalizacyjną przyjmującą argumenty wyrażające nazwę produktu (typu str) i jego cenę (typu float) -- w takiej kolejności -- i ustawiającą atrybuty `name` (typu str) oraz `price` (typu float)
     def __init__(self, name: str, price: float):
@@ -65,7 +65,7 @@ class ListServer(Server):
 
 
 class MapServer(Server):
-    def __init__(self, products: Dict[str:int]):
+    def __init__(self, products: Dict[str, int]):
         self.products = [Product(p, products[p]) for p in products]
 
     def get_entries(self, n_letters):
