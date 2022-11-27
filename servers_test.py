@@ -38,5 +38,16 @@ class MapServerTest(unittest.TestCase):
             self.fail()
 
 
+class ProductTest(unittest.TestCase):
+    def test_equality_of_products(self):
+        p1 = Product("JP2", 21.37)
+        p2 = Product("JP2", 21.37)
+        p3 = Product("J2", 21.37)
+        p4 = Product("JP2", 21.47)
+        self.assertEqual(p1, p2)
+        self.assertNotEqual(p2, p3)
+        self.assertNotEqual(p1, p4)
+
+
 if __name__ == '__main__':
     unittest.main()
