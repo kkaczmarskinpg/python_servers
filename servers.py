@@ -90,7 +90,7 @@ class Client:
     def __init__(self, server: Server):
         self.server = server
 
-    def get_total_price(self, n_letters: Optional[int]) -> Optional[float]:
+    def get_total_price(self, n_letters: int) -> Optional[float]:
         try:
             products = self.server.get_entries(n_letters)
         except TooManyProductsFoundError as e:
