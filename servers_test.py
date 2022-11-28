@@ -80,6 +80,10 @@ class ServerTest(unittest.TestCase):
 
 class ClientTest(unittest.TestCase):
     TestServer = ListServer([Product('aa12', 1.0), Product(
+        'Ae34', 3.5), Product('mn980', 4.6), Product('g646', 2.0)]
+        + [Product('aa21', 1.0), Product(
+            'Ae13', 3.5), Product('mn98', 4.6), Product('g66', 2.0)])
+    TestServer_map = MapServer([Product('aa12', 1.0), Product(
         'Ae34', 3.5), Product('mn980', 4.6), Product('g64', 2.0)]
         + [Product('aa21', 1.0), Product(
             'Ae13', 3.5), Product('mn98', 4.6), Product('g66', 2.0)])
@@ -95,6 +99,17 @@ class ClientTest(unittest.TestCase):
         # poprawne
         #self.assertEqual(Client(self.TestServer).get_total_price(2), 9.1)
         self.assertEqual(Client(self.TestServer).get_total_price(1), 4.0)
+
+        self.assertEqual(Client(self.TestServer_map).get_total_price(0), None)
+        self.assertEqual(Client(self.TestServer_map).get_total_price(10), None)
+        # wyjątki
+        self.assertEqual(Client(self.TestServer_map).get_total_price(-3), None)
+        self.assertEqual(
+            Client(self.TestServer_map).get_total_price('a'), None)
+        self.assertEqual(Client(self.TestServer_map).get_total_price(2), None)
+        # poprawne
+        #self.assertEqual(Client(self.TestServer).get_total_price(2), 9.1)
+        self.assertEqual(Client(self.TestServer_map).get_total_price(1), 4.0)
 
 
 if __name__ == '__main__':

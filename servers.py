@@ -7,6 +7,8 @@
 """Marek Janaszkiewicz, 411925"""
 
 
+
+
 from typing import Optional, List, Dict
 from abc import ABC, abstractmethod
 from operator import attrgetter
@@ -56,7 +58,7 @@ class ListServer(Server):
         self.products = [Product(p.name, p.price) for p in products]
 
     def get_entries(self, n_letters) -> List[Product]:
-        pattern = '^[a-zA-Z]{n}[0-9]{2,3}'.replace('n', str(n_letters))
+        pattern = '^[a-zA-Z]{n}[0-9]{2,3}$'.replace('n', str(n_letters))
         good_prods = [
             p for p in self.products if re.fullmatch(pattern, p.name)]
         if len(good_prods) > Server.n_max_returned_entries:
