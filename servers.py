@@ -49,18 +49,13 @@ class Server(ABC):
     n_max_returned_entries: int = 5
 
     @abstractmethod
-    def get_entries(n_letters: int) -> List[Product]:
+    def get_products_list(self) -> List[Product]:
         raise NotImplementedError()
-
-
-class ListServer(Server):
-    def __init__(self, products: List[Product]):
-        self.products = [Product(p.name, p.price) for p in products]
 
     def get_entries(self, n_letters) -> List[Product]:
         pattern = '^[a-zA-Z]{n}[0-9]{2,3}$'.replace('n', str(n_letters))
         good_prods = [
-            p for p in self.products if re.fullmatch(pattern, p.name)]
+            p for p in self.get_products_list() if re.fullmatch(pattern, p.name)]
         if len(good_prods) > Server.n_max_returned_entries:
             raise TooManyProductsFoundError(
                 "Za dużo produktów kolego!", len(good_prods))
@@ -68,22 +63,20 @@ class ListServer(Server):
         return good_prods
 
 
+class ListServer(Server):
+    def __init__(self, products: List[Product]):
+        self.products = [Product(p.name, p.price) for p in products]
+
+    def get_products_list(self) -> List[Product]:
+        return self.products
+
+
 class MapServer(Server):
     def __init__(self, products: List[Product]):
         self.products = {p.name: p for p in products}
 
-    def get_entries(self, n_letters):
-        expression = '^[a-zA-Z]{n_letters}[0-9]{2,3}$'.replace(
-            'n_letters', str(n_letters))
-        list_of_products = []
-        for product in self.products:
-            if re.fullmatch(expression, product):
-                list_of_products.append(self.products[product])
-        if len(list_of_products) > Server.n_max_returned_entries:
-            raise TooManyProductsFoundError(
-                'Za dużo produktów kolego!', len(list_of_products))
-        list_of_products.sort(key=attrgetter('price'))
-        return list_of_products
+    def get_products_list(self) -> List[Product]:
+        return self.products.values()
 
 
 class Client:
