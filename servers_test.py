@@ -65,28 +65,36 @@ class ProductTest(unittest.TestCase):
         with self.assertRaises(ValueError):
             p = Product("AB.202", 11)
 
+
 class ServerTest(unittest.TestCase):
- 
+
     def test_get_entries_returns_in_ascending_order(self):
-        products = [Product('Pp12', 3), Product('PP234', 2), Product('PP235', 1)]
+        products = [Product('Pp12', 3), Product(
+            'PP234', 2), Product('PP235', 1)]
         for server_type in server_types:
             server = server_type(products)
             entries = server.get_entries(2)
-            self.assertEqual(products.sort(key=attrgetter('price')), entries)
- 
- 
+            products.sort(key=attrgetter('price'))
+            self.assertEqual(products, entries)
+
+
 class ClientTest(unittest.TestCase):
-    TestServer = ListServer([Product('aa12',1.0),Product('Ae34',3.5),Product('mn980',4.6),Product('g64',2.0)])
+    TestServer = ListServer([Product('aa12', 1.0), Product(
+        'Ae34', 3.5), Product('mn980', 4.6), Product('g64', 2.0)]
+        + [Product('aa21', 1.0), Product(
+            'Ae13', 3.5), Product('mn98', 4.6), Product('g66', 2.0)])
+
     def test_get_total_price(self):
-        #przypadki braku produktów pasujących do kryterium wyszukiwania
-        self.assertEqual(Client(self.TestServer).get_total_price(0),None)
-        self.assertEqual(Client(self.TestServer).get_total_price(10),None)
-        #wyjątki
-        self.assertEqual(Client(self.TestServer).get_total_price(-3),None)
-        self.assertEqual(Client(self.TestServer).get_total_price('a'),None)
-        #poprawne
-        self.assertEqual(Client(self.TestServer).get_total_price(2),9.1)
-        self.assertEqual(Client(self.TestServer).get_total_price(1),2.0)
+        # przypadki braku produktów pasujących do kryterium wyszukiwania
+        self.assertEqual(Client(self.TestServer).get_total_price(0), None)
+        self.assertEqual(Client(self.TestServer).get_total_price(10), None)
+        # wyjątki
+        self.assertEqual(Client(self.TestServer).get_total_price(-3), None)
+        self.assertEqual(Client(self.TestServer).get_total_price('a'), None)
+        self.assertEqual(Client(self.TestServer).get_total_price(2), None)
+        # poprawne
+        #self.assertEqual(Client(self.TestServer).get_total_price(2), 9.1)
+        self.assertEqual(Client(self.TestServer).get_total_price(1), 4.0)
 
 
 if __name__ == '__main__':
