@@ -76,7 +76,7 @@ class ServerTest(unittest.TestCase):
  
  
 class ClientTest(unittest.TestCase):
-    TestServer = ListServer([Product('aa12',1.0),Product('Ae34',3.5),Product('mn980',4.6),Product('g64',2.0)])
+    TestServer = ListServer([Product('aa12',1.0),Product('Ae34',3.5),Product('mn980',4.6),Product('g64',2.0),Product('h5',3.0)])
     def test_get_total_price(self):
         #przypadki braku produktów pasujących do kryterium wyszukiwania
         self.assertEqual(Client(self.TestServer).get_total_price(0),None)
