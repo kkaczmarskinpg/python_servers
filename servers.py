@@ -52,7 +52,7 @@ class Server(ABC):
     def get_products_list(self) -> List[Product]:
         raise NotImplementedError()
 
-    def get_entries(self, n_letters) -> List[Product]:
+    def get_entries(self, n_letters: int = 1) -> List[Product]:
         pattern = '^[a-zA-Z]{n}[0-9]{2,3}$'.replace('n', str(n_letters))
         good_prods = [
             p for p in self.get_products_list() if re.fullmatch(pattern, p.name)]
@@ -84,7 +84,7 @@ class Client:
     def __init__(self, server: Server):
         self.server = server
 
-    def get_total_price(self, n_letters: int) -> Optional[float]:
+    def get_total_price(self, n_letters: int = 1) -> Optional[float]:
         try:
             products = self.server.get_entries(n_letters)
         except TooManyProductsFoundError as e:
