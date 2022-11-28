@@ -18,7 +18,7 @@ class Product:
             self.name: str = name
             self.price: float = price
         else:
-            raise ValueError
+            raise ValueError("Nazwa musi składać się z conajmniej jednej litery i cyfry!")
 
     def __eq__(self, other) -> bool:
         if self.name == other.name and self.price == other.price:

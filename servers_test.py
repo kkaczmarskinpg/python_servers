@@ -1,7 +1,8 @@
 import unittest
-from collections import Counter
-
+from operator import attrgetter
 from servers import ListServer, Product, Client, MapServer, TooManyProductsFoundError
+
+server_types = (ListServer, MapServer)
 
 
 class ListServerTest(unittest.TestCase):
@@ -64,6 +65,16 @@ class ProductTest(unittest.TestCase):
         with self.assertRaises(ValueError):
             p = Product("AB.202", 11)
 
+class ServerTest(unittest.TestCase):
+ 
+    def test_get_entries_returns_in_ascending_order(self):
+        products = [Product('Pp12', 3), Product('PP234', 2), Product('PP235', 1)]
+        for server_type in server_types:
+            server = server_type(products)
+            entries = server.get_entries(2)
+            self.assertEqual(products.sort(key=attrgetter('price')), entries)
+ 
+ 
 class ClientTest(unittest.TestCase):
     TestServer = ListServer([Product('aa12',1.0),Product('Ae34',3.5),Product('mn980',4.6),Product('g64',2.0)])
     def test_get_total_price(self):
