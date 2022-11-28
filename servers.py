@@ -88,7 +88,6 @@ class Client:
         try:
             products = self.server.get_entries(n_letters)
         except TooManyProductsFoundError as e:
-            print(e.message)
             return None
         if not products:
             return None
