@@ -64,6 +64,19 @@ class ProductTest(unittest.TestCase):
         with self.assertRaises(ValueError):
             p = Product("AB.202", 11)
 
+class ClientTest(unittest.TestCase):
+    TestServer = ListServer([Product('aa12',1.0),Product('Ae34',3.5),Product('mn980',4.6),Product('g6',2.0)])
+    def get_total_price(self):
+        #przypadki braku produktów pasujących do kryterium wyszukiwania
+        self.assertEqual(Client(TestServer).get_total_price(0),None)
+        self.assertEqual(Client(TestServer).get_total_price(10),None)
+        #wyjątki
+        self.assertEqual(Client(TestServer).get_total_price(-3),None)
+        self.assertEqual(Client(TestServer).get_total_price('a'),None)
+        #poprawne
+        self.assertEqual(Client(TestServer).get_total_price(2),11.1)
+        self.assertEqual(Client(TestServer).get_total_price(1),2.0)
+
 
 if __name__ == '__main__':
     unittest.main()
