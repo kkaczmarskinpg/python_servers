@@ -2,8 +2,6 @@ import unittest
 from operator import attrgetter
 from servers import ListServer, Product, Client, MapServer, TooManyProductsFoundError
 
-server_types = (ListServer, MapServer)
-
 
 class ListServerTest(unittest.TestCase):
 
@@ -21,6 +19,20 @@ class ListServerTest(unittest.TestCase):
         except TooManyProductsFoundError:
             self.fail()
 
+    def test_get_entries_returns_in_ascending_order(self):
+        products = [Product('Pp12', 3), Product(
+            'PP234', 2), Product('PP235', 1)]
+        server = ListServer(products)
+        entries = server.get_entries(2)
+        products.sort(key=attrgetter('price'))
+        self.assertEqual(products, entries)
+
+
+''' 
+    Rozdzieliliśmy testy dla MapServer oraz ListServer aby dostawać konkretną informację zwrotną
+    w przypadku błędu, w którym serwerze on wystąpił.
+'''
+
 
 class MapServerTest(unittest.TestCase):
 
@@ -37,6 +49,14 @@ class MapServerTest(unittest.TestCase):
             server.get_entries(1)
         except TooManyProductsFoundError:
             self.fail()
+
+    def test_get_entries_returns_in_ascending_order(self):
+        products = [Product('Pp12', 3), Product(
+            'PP234', 2), Product('PP235', 1)]
+        server = MapServer(products)
+        entries = server.get_entries(2)
+        products.sort(key=attrgetter('price'))
+        self.assertEqual(products, entries)
 
 
 class ProductTest(unittest.TestCase):
@@ -64,18 +84,6 @@ class ProductTest(unittest.TestCase):
             p = Product("AB202022_", 11)
         with self.assertRaises(ValueError):
             p = Product("AB.202", 11)
-
-
-class ServerTest(unittest.TestCase):
-
-    def test_get_entries_returns_in_ascending_order(self):
-        products = [Product('Pp12', 3), Product(
-            'PP234', 2), Product('PP235', 1)]
-        for server_type in server_types:
-            server = server_type(products)
-            entries = server.get_entries(2)
-            products.sort(key=attrgetter('price'))
-            self.assertEqual(products, entries)
 
 
 class ClientTest(unittest.TestCase):
