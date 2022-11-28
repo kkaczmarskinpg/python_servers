@@ -1,8 +1,17 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+"""Gr. 2b"""
+"""Kacper Kaczmarski, 411814"""
+"""Kacper Iwicki, 412027"""
+"""Marceli Jach, 409669"""
+"""Marek Janaszkiewicz, 411925"""
+
+
+
+
 import unittest
 from operator import attrgetter
 from servers import ListServer, Product, Client, MapServer, TooManyProductsFoundError
-
-
 class ListServerTest(unittest.TestCase):
 
     def test_TooManyProductsFoundError_throw(self):
