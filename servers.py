@@ -10,6 +10,7 @@
 
 from typing import Optional, List, Dict
 from abc import ABC, abstractmethod
+from operator import attrgetter
 import re
 class Product:
     # Done: klasa powinna posiadać metodę inicjalizacyjną przyjmującą argumenty wyrażające nazwę produktu (typu str) i jego cenę (typu float) -- w takiej kolejności -- i ustawiającą atrybuty `name` (typu str) oraz `price` (typu float)
@@ -18,7 +19,8 @@ class Product:
             self.name: str = name
             self.price: float = price
         else:
-            raise ValueError("Nazwa musi składać się z conajmniej jednej litery i cyfry!")
+            raise ValueError(
+                "Nazwa musi składać się z conajmniej jednej litery i cyfry!")
 
     def __eq__(self, other) -> bool:
         if self.name == other.name and self.price == other.price:
@@ -61,6 +63,7 @@ class ListServer(Server):
         if len(good_prods) > Server.n_max_returned_entries:
             raise TooManyProductsFoundError(
                 "Za dużo produktów kolego!", len(good_prods))
+        good_prods.sort(key=attrgetter('price'))
         return good_prods
 
 
@@ -78,6 +81,7 @@ class MapServer(Server):
         if len(list_of_products) > Server.n_max_returned_entries:
             raise TooManyProductsFoundError(
                 'Za dużo produktów kolego!', len(list_of_products))
+        list_of_products.sort(key=attrgetter('price'))
         return list_of_products
 
 
