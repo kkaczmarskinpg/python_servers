@@ -1,3 +1,9 @@
+' gr. 2b 
+' Kacper Kaczmarski, 411814 
+' Kacper Iwicki, 412027
+' Marceli Jach, 409669
+' Marek Janaszkiewicz, 411925
+
 @startuml
 class Product{
 + str: name
